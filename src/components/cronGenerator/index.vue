@@ -423,6 +423,55 @@
                     </RadioGroup>
                 </Card>
             </TabPane>
+            <TabPane key="7" tab="年">
+                <Card class="card-top">
+                    <RadioGroup
+                        :value="radioValue.year"
+                        @change="(e: any) => handleRadioChange(e, 'year')"
+                    >
+                        <Radio :value="1"> 每年执行 </Radio>
+
+                        <Radio :value="'period'">
+                            周期从
+                            <InputNumber
+                                :disabled="radioValue['year'] !== 'period'"
+                                :min="1970"
+                                :max="2099"
+                                :value="periodValue.year.min"
+                                @change="(e: any) => handlePeriodChange(e as number, 'year', 'min')"
+                            ></InputNumber>
+                            -
+                            <InputNumber
+                                :disabled="radioValue['year'] !== 'period'"
+                                :min="1971"
+                                :max="2100"
+                                :value="periodValue.year.max"
+                                @change="(e: any) => handlePeriodChange(e as number, 'year', 'max')"
+                            ></InputNumber>
+                            年
+                        </Radio>
+                        <Radio :value="'loop'">
+                            从
+                            <InputNumber
+                                :disabled="radioValue['year'] !== 'loop'"
+                                :min="1970"
+                                :max="2099"
+                                :value="loopValue.year.start"
+                                @change="(e: any) => handleLoopChange(e as number, 'year', 'start')"
+                            ></InputNumber>
+                            年开始，每
+                            <InputNumber
+                                :disabled="radioValue['year'] !== 'loop'"
+                                :min="1"
+                                :max="2100"
+                                :value="loopValue.year.end"
+                                @change="(e: any) => handleLoopChange(e as number, 'year', 'end')"
+                            ></InputNumber>
+                            年执行一次
+                        </Radio>
+                    </RadioGroup>
+                </Card>
+            </TabPane>
         </Tabs>
         <Card>
             <Row>
@@ -470,6 +519,7 @@ const cronType = [
     "day",
     "month",
     "week",
+    "year",
 ] as cronTimeEnum[];
 
 const props = defineProps<{
@@ -490,6 +540,7 @@ const radioValue = ref<IradioType>({
     day: 1,
     month: 1,
     week: 1,
+    year: 1,
 });
 const setPointValue = (val: IpointType) => {
     pointValue.value = val;
@@ -502,6 +553,7 @@ const periodValue = ref<IperiodType>({
     day: { min: 1, max: 2 },
     month: { min: 1, max: 2 },
     week: { min: 2, max: 3 },
+    year: { min: 2023, max: 2099 },
 });
 // 从...开始
 const loopValue = ref<IloopType>({
@@ -511,6 +563,7 @@ const loopValue = ref<IloopType>({
     day: { start: 1, end: 1 },
     month: { start: 1, end: 1 },
     week: { start: 1, end: 1 },
+    year: { start: 2023, end: 1 },
 });
 // 指定
 const pointValue = ref<IpointType>({
@@ -520,6 +573,7 @@ const pointValue = ref<IpointType>({
     day: [],
     month: [],
     week: [],
+    year: [],
 });
 
 // 最近运行时间
@@ -569,6 +623,7 @@ const resetCronState = () => {
         day: { min: 1, max: 2 },
         month: { min: 1, max: 2 },
         week: { min: 2, max: 3 },
+        year: { min: 2023, max: 2099 },
     };
     loopValue.value = {
         second: { start: 0, end: 1 },
@@ -577,6 +632,7 @@ const resetCronState = () => {
         day: { start: 1, end: 1 },
         month: { start: 1, end: 1 },
         week: { start: 1, end: 1 },
+        year: { start: 2023, end: 1 },
     };
     cronText.value = "";
 };
@@ -587,7 +643,7 @@ const createCron = () => {
         (item) => (changeCron = { ...changeCron, ...cronGenerator(item) })
     );
 
-    const { second, minute, hour, day, month, week } = changeCron;
+    const { second, minute, hour, day, month, week, year } = changeCron;
 
     const tempText =
         second +
@@ -600,7 +656,9 @@ const createCron = () => {
         " " +
         month +
         " " +
-        week;
+        week +
+        " " +
+        year;
     cronText.value = tempText;
     resultTime.value = cronRunTime(tempText);
 };
@@ -664,6 +722,8 @@ const cronItemGenerator = (
             return { month: data };
         case "week":
             return { week: data };
+        case "year":
+            return { year: data };
         default:
             return {};
     }

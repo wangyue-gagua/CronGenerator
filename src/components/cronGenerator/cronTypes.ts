@@ -5,6 +5,7 @@ export interface IradioType {
     day: number | string;
     month: number | string;
     week: number | string;
+    year: number | string;
 }
 
 // 基础 cron 数据类型
@@ -14,7 +15,8 @@ export type cronTimeEnum =
     | "hour"
     | "day"
     | "month"
-    | "week";
+    | "week"
+    | "year";
 
 // 周期
 export interface IperiodType {
@@ -24,6 +26,7 @@ export interface IperiodType {
     day: minMaxType;
     month: minMaxType;
     week: minMaxType;
+    year: minMaxType;
 }
 interface minMaxType {
     min: number;
@@ -38,6 +41,7 @@ export interface IloopType {
     day: startEndType;
     month: startEndType;
     week: startEndType;
+    year: startEndType;
 }
 interface startEndType {
     start: number;
@@ -52,4 +56,5 @@ export interface IpointType {
     day: number[];
     month: number[];
     week: number[];
+    year: number[];
 }

@@ -2,7 +2,7 @@
 import CronGenerator from "./cronGenerator/index.vue";
 import { ref } from "vue";
 
-const cronExpression = ref("* * * * * *");
+const cronExpression = ref("* * * * * * *");
 const handleExpChange = (exp: string) => {
     cronExpression.value = exp;
 };
